@@ -2,9 +2,10 @@ package splitd
 
 import (
 	"bufio"
-	"fmt"
+	"log"
 	"net/http"
 	"strings"
+	"time"
 )
 
 type Relay struct {
@@ -13,20 +14,17 @@ type Relay struct {
 
 func NewRelay(config *Config) *Relay {
 	r := &Relay{config}
+
 	return r
 }
 
-func (r *Relay) Run() {
+func (r *Relay) Request() {
+	req, _ := http.NewRequest("GET", r.Config.SourceURL, nil)
+
 	client := &http.Client{}
-
-	req, err := http.NewRequest("GET", r.Config.SourceURL, nil)
-	if err != nil {
-		panic(fmt.Sprintf("%s", err))
-	}
-
 	res, err := client.Do(req)
 	if err != nil {
-		// TODO: New request
+		log.Printf("%s", err)
 		return
 	}
 
@@ -35,17 +33,20 @@ func (r *Relay) Run() {
 	for {
 		line, err := reader.ReadString('\n')
 		if err != nil {
-			// TODO: New request
-			break
+			return
 		}
 
 		body := strings.NewReader(line)
-		req, err = http.NewRequest("POST", r.Config.DestURL, body)
-		if err != nil {
-			panic(fmt.Sprintf("%s", err))
-		}
+		req, _ = http.NewRequest("POST", r.Config.DestURL, body)
 
 		c := &http.Client{}
 		c.Do(req)
+	}
+}
+
+func (r *Relay) Run() {
+	for {
+		r.Request()
+		time.Sleep(time.Second)
 	}
 }
