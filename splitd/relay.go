@@ -18,7 +18,7 @@ func NewRelay(config *Config) *Relay {
 	return r
 }
 
-func (r *Relay) Request() {
+func (r *Relay) Listen() {
 	req, _ := http.NewRequest("GET", r.Config.SourceURL, nil)
 
 	client := &http.Client{}
@@ -31,22 +31,26 @@ func (r *Relay) Request() {
 	reader := bufio.NewReader(res.Body)
 
 	for {
-		line, err := reader.ReadString('\n')
+		msg, err := reader.ReadString('\n')
 		if err != nil {
 			return
 		}
 
-		body := strings.NewReader(line)
-		req, _ = http.NewRequest("POST", r.Config.DestURL, body)
-
-		c := &http.Client{}
-		c.Do(req)
+		go r.Send(msg)
 	}
+}
+
+func (r *Relay) Send(msg string) {
+	body := strings.NewReader(msg)
+	req, _ := http.NewRequest("POST", r.Config.DestURL, body)
+
+	client := &http.Client{}
+	client.Do(req)
 }
 
 func (r *Relay) Run() {
 	for {
-		r.Request()
+		r.Listen()
 		time.Sleep(time.Second)
 	}
 }
