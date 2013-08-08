@@ -19,7 +19,8 @@ func NewRelay(config *Config) *Relay {
 }
 
 func (r *Relay) Listen() {
-	req, _ := http.NewRequest("GET", r.Config.SourceURL, nil)
+	req, _ := http.NewRequest(r.Config.SourceMethod, r.Config.SourceURL, nil)
+	setAuth(req, r.Config.SourceAuth)
 
 	client := &http.Client{}
 	res, err := client.Do(req)
@@ -42,7 +43,8 @@ func (r *Relay) Listen() {
 
 func (r *Relay) Send(msg string) {
 	body := strings.NewReader(msg)
-	req, _ := http.NewRequest("POST", r.Config.DestURL, body)
+	req, _ := http.NewRequest(r.Config.DestMethod, r.Config.DestURL, body)
+	setAuth(req, r.Config.DestAuth)
 
 	client := &http.Client{}
 	client.Do(req)
@@ -52,5 +54,16 @@ func (r *Relay) Run() {
 	for {
 		r.Listen()
 		time.Sleep(time.Second)
+	}
+}
+
+// Helpers
+
+func setAuth(req *http.Request, auth string) {
+	parts := strings.Split(auth, ":")
+	if len(parts) == 1 {
+		req.SetBasicAuth("", parts[0])
+	} else {
+		req.SetBasicAuth(parts[0], parts[1])
 	}
 }

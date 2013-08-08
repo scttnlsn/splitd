@@ -13,7 +13,11 @@ func init() {
 	config = splitd.NewConfig()
 
 	flag.StringVar(&config.SourceURL, "source-url", "", "URL from which to read messages (required)")
+	flag.StringVar(&config.SourceAuth, "source-auth", "", "HTTP basic auth required for source requests")
+	flag.StringVar(&config.SourceMethod, "source-method", "GET", "HTTP request method for source requests")
 	flag.StringVar(&config.DestURL, "dest-url", "", "URL to which messages are sent (required)")
+	flag.StringVar(&config.DestAuth, "dest-auth", "", "HTTP basic auth required for destination requests")
+	flag.StringVar(&config.DestMethod, "dest-method", "POST", "HTTP request method for destination requests")
 }
 
 func main() {

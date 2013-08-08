@@ -23,8 +23,8 @@ Ensure Go is installed and then run:
 ## CLI Options
 
 * **-source-url="..."** - URL from which to read messages (required)
-* **-source-auth=""** - HTTP basic auth password required for source requests
+* **-source-auth=""** - HTTP basic auth required for source requests
 * **-source-method="GET"** - HTTP request method for source requests
 * **-dest-url="..."** - URL to which messages are sent (required)
-* **-dest-auth=""** - HTTP basic auth password required for destination requests
+* **-dest-auth=""** - HTTP basic auth required for destination requests
 * **-dest-method="POST"** - HTTP request method for destination requests
