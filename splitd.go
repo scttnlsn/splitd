@@ -1,9 +1,9 @@
 package main
 
 import (
-	"./splitd"
 	"flag"
 	"fmt"
+	"github.com/scttnlsn/splitd/splitd"
 	"net/url"
 )
 
@@ -24,16 +24,15 @@ func main() {
 	flag.Parse()
 
 	_, err := url.Parse(config.SourceURL)
-	if err != nil {
+	if config.SourceURL == "" || err != nil {
 		panic(fmt.Sprintf("Source URL malformed: %s", err))
 	}
 
 	_, err = url.Parse(config.DestURL)
-	if err != nil {
+	if config.DestURL == "" || err != nil {
 		panic(fmt.Sprintf("Destination URL malformed: %s", err))
 	}
 
 	r := splitd.NewRelay(config)
-
 	r.Run()
 }
