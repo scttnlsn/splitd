@@ -28,3 +28,4 @@ Ensure Go is installed and then run:
 * **-dest-url="..."** - URL to which messages are sent (required)
 * **-dest-auth=""** - HTTP basic auth required for destination requests
 * **-dest-method="POST"** - HTTP request method for destination requests
+* **-v** - output the version number

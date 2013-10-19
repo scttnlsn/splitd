@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/scttnlsn/splitd/splitd"
 	"net/url"
+	"os"
 )
 
 var config *splitd.Config
@@ -21,7 +22,14 @@ func init() {
 }
 
 func main() {
+	version := flag.Bool("v", false, "output the version number")
+
 	flag.Parse()
+
+	if *version {
+		fmt.Println(splitd.Version)
+		os.Exit(0)
+	}
 
 	_, err := url.Parse(config.SourceURL)
 	if config.SourceURL == "" || err != nil {
